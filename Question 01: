@@ -1,0 +1,83 @@
+from sympy.interactive import printing
+from IPython.display import display
+printing.init_printing(use_latex=True)
+import sympy as sp
+# y′′′ + y′ = tanx
+# Variation of Parameters
+# Question 02
+X= sp.symbols('X')
+y = sp.Function('f')(X)
+diff_eqn = sp.Eq(y.diff(X,X,X)+y.diff(X),sp.tan(X))
+yc = sp.dsolve(diff_eqn.lhs,y)
+print("YC is: ")
+sp.pprint(yc.rhs)
+
+# for Yp let yp = u1y1 + U2y2
+y1 = 1
+y2 = sp.sin(X)
+y3 = sp.cos(X)
+# Hardqoutig Y1 and Y2 as can be seen from the yc equation
+y1_f_deriv = 0
+y1_s_deriv = 0
+y2_f_deriv = y2.diff(X)
+y2_s_deriv = y2.diff(X,X)
+y3_f_deriv = y3.diff(X)
+y3_s_deriv = y3.diff(X,X)
+
+# Create a list of lists of expressions for the rows of the matrix
+mat_1 = [[y1, y2, y3],
+               [y1_f_deriv, y2_f_deriv, y3_f_deriv],
+               [y1_s_deriv, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat = sp.Matrix(mat_1)
+w = sp.det(w_mat)
+display(w)
+mat_2 = [[0, y2, y3],
+               [0, y2_f_deriv, y3_f_deriv],
+               [diff_eqn.rhs, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_2 = sp.Matrix(mat_2)
+display(w_mat_2)
+w1 = sp.trigsimp(sp.det(w_mat_2))
+
+display(w1)
+mat_3 = [[y1, 0, y3],
+               [y1_f_deriv, 0, y3_f_deriv],
+               [y1_s_deriv, diff_eqn.rhs, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_3 = sp.Matrix(mat_3)
+w2 = sp.trigsimp(sp.det(w_mat_3))
+display(w_mat_3)
+display(w2)
+# Display the matrix
+mat_4 = [[y1, y2, 0],
+               [y1_f_deriv, y2_f_deriv, 0],
+               [y1_s_deriv, y2_s_deriv, diff_eqn.rhs]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_4 = sp.Matrix(mat_4)
+w3 = sp.trigsimp(sp.det(w_mat_4))
+display(w_mat_4)
+display(w3)
+u1 = sp.simplify(sp.integrate((w1/w),X))
+u2 = sp.simplify(sp.integrate((w2/w),X))
+u3 = sp.simplify(sp.integrate((w3/w),X))
+
+
+yp = (u1*y1 ) + (u2*y2 ) + (u3*y3)
+yp = sp.trigsimp((yp))
+print("Yp is: ")
+display(yp)
+print("Solution Y is: ")
+display((yc+yp))
