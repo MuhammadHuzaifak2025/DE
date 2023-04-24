@@ -1,0 +1,424 @@
+#%%
+# Question 2 A
+from sympy.interactive import printing
+import re
+from IPython.display import display
+printing.init_printing(use_latex=True)
+import sympy as sp
+# Variation of Parameters
+# Question 01
+X= sp.symbols('X')
+y = sp.Function('f')(X)
+diff_eqn = sp.Eq(y.diff(X,X) +1*y ,sp.csc(X))
+
+# For Yp let f.diff(X,X) m^2 +1 = 0, m = +-i
+yc = sp.dsolve(diff_eqn.lhs,y)
+display("YC is: ")
+display(yc.rhs)
+
+# for Yp let yp = u1y1 + U2y2
+# Entering Y1 and Y2 as can be seen from the yc equation
+y1 = sp.sin(X)
+y2 = sp.cos(X)
+
+y1 = sp.cos(X)
+y2 = sp.sin(X)
+
+# Entering Y1 and Y2 as can be seen from the yc equation
+y1_f_deriv = y1.diff(X)
+y1_s_deriv = y1.diff(X,X)
+y2_f_deriv = y2.diff(X)
+y2_s_deriv = y2.diff(X,X)
+
+
+# Create a list of lists of expressions for the rows of the matrix
+matrix_list = [[y1, y2],
+               [y1_f_deriv, y2_f_deriv]]
+
+
+# Create the matrix using the list of lists
+wronskian = sp.Matrix(matrix_list)
+
+# Display the matrix
+display("The Wronskian is: ",wronskian.det())
+w = wronskian.det()
+
+W1 = [[0, y2],
+               [diff_eqn.rhs, y2_f_deriv]]
+w1 =  sp.Matrix(W1)
+
+W2 =  [[y1, 0],
+               [y1_f_deriv ,diff_eqn.rhs]]
+w2 =  sp.Matrix(W2)
+yp = (y1*sp.integrate(w1.det()/w))+(y2*sp.integrate(w2.det()/w))
+display("The Yp is: ",yp)
+sol = yp + yc.rhs
+display("The Solution is: ",(sp.trigsimp(sp.simplify(sol))))
+#%%
+# Question 2B
+from sympy.interactive import printing
+from IPython.display import display
+printing.init_printing(use_latex=True)
+import sympy as sp
+# y′′′ + y′ = tanx
+# Variation of Parameters
+# Question 02
+X= sp.symbols('X')
+y = sp.Function('f')(X)
+diff_eqn = sp.Eq(y.diff(X,X,X)+y.diff(X),sp.tan(X))
+yc = sp.dsolve(diff_eqn.lhs,y)
+print("YC is: ")
+sp.pprint(yc.rhs)
+
+# for Yp let yp = u1y1 + U2y2
+y1 = 1
+y2 = sp.sin(X)
+y3 = sp.cos(X)
+# Hardqoutig Y1 and Y2 as can be seen from the yc equation
+y1_f_deriv = 0
+y1_s_deriv = 0
+y2_f_deriv = y2.diff(X)
+y2_s_deriv = y2.diff(X,X)
+y3_f_deriv = y3.diff(X)
+y3_s_deriv = y3.diff(X,X)
+
+# Create a list of lists of expressions for the rows of the matrix
+mat_1 = [[y1, y2, y3],
+               [y1_f_deriv, y2_f_deriv, y3_f_deriv],
+               [y1_s_deriv, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat = sp.Matrix(mat_1)
+w = sp.det(w_mat)
+display("The Wronskian is: ",w)
+mat_2 = [[0, y2, y3],
+               [0, y2_f_deriv, y3_f_deriv],
+               [diff_eqn.rhs, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_2 = sp.Matrix(mat_2)
+display(w_mat_2)
+w1 = sp.trigsimp(sp.det(w_mat_2))
+
+display("W1 = ",w1)
+mat_3 = [[y1, 0, y3],
+               [y1_f_deriv, 0, y3_f_deriv],
+               [y1_s_deriv, diff_eqn.rhs, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_3 = sp.Matrix(mat_3)
+w2 = sp.trigsimp(sp.det(w_mat_3))
+display(w_mat_3)
+display("W2: ",w2)
+# Display the matrix
+mat_4 = [[y1, y2, 0],
+               [y1_f_deriv, y2_f_deriv, 0],
+               [y1_s_deriv, y2_s_deriv, diff_eqn.rhs]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_4 = sp.Matrix(mat_4)
+w3 = sp.trigsimp(sp.det(w_mat_4))
+display(w_mat_4)
+display("W3 : ",w3)
+u1 = sp.simplify(sp.integrate((w1/w),X))
+u2 = sp.simplify(sp.integrate((w2/w),X))
+u3 = sp.simplify(sp.integrate((w3/w),X))
+
+display("u1: ", u1)
+display("u2: ", u2)
+display("u3: ", u3)
+
+
+yp = (u1*y1 ) + (u2*y2 ) + (u3*y3)
+yp = sp.trigsimp((yp))
+
+display("The Yp is: y",yp)
+print("Solution Y is: ")
+sol = yc.rhs + yp
+sol = sp.simplify(sol)
+sol = sp.trigsimp(sol)
+display("The Solution is: ",sol)
+#%%
+# Question 2C
+# Question 2B
+from sympy.interactive import printing
+from IPython.display import display
+printing.init_printing(use_latex=True)
+import sympy as sp
+# y′′′ + y′ = tanx
+# Variation of Parameters
+# Question 02
+X= sp.symbols('X')
+y = sp.Function('f')(X)
+diff_eqn = sp.Eq(y.diff(X,X,X) + 4*y.diff(X), sp.sec(2*X))
+yc = sp.dsolve(diff_eqn.lhs,y)
+print("YC is: ")
+sp.pprint(yc.rhs)
+
+# for Yp let yp = u1y1 + U2y2
+y1 = 1
+y2 = sp.sin(2*X)
+y3 = sp.cos(2*X)
+# Hardqoutig Y1 and Y2 as can be seen from the yc equation
+y1_f_deriv = 0
+y1_s_deriv = 0
+y2_f_deriv = y2.diff(X)
+y2_s_deriv = y2.diff(X,X)
+y3_f_deriv = y3.diff(X)
+y3_s_deriv = y3.diff(X,X)
+
+# Create a list of lists of expressions for the rows of the matrix
+mat_1 = [[y1, y2, y3],
+               [y1_f_deriv, y2_f_deriv, y3_f_deriv],
+               [y1_s_deriv, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat = sp.Matrix(mat_1)
+w = sp.det(w_mat)
+display("The Wronskian is: ",w)
+mat_2 = [[0, y2, y3],
+               [0, y2_f_deriv, y3_f_deriv],
+               [diff_eqn.rhs, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_2 = sp.Matrix(mat_2)
+display(w_mat_2)
+w1 = sp.trigsimp(sp.det(w_mat_2))
+
+display("W1 = ",w1)
+mat_3 = [[y1, 0, y3],
+               [y1_f_deriv, 0, y3_f_deriv],
+               [y1_s_deriv, diff_eqn.rhs, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_3 = sp.Matrix(mat_3)
+w2 = sp.trigsimp(sp.det(w_mat_3))
+display(w_mat_3)
+display("W2: ",w2)
+# Display the matrix
+mat_4 = [[y1, y2, 0],
+               [y1_f_deriv, y2_f_deriv, 0],
+               [y1_s_deriv, y2_s_deriv, diff_eqn.rhs]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_4 = sp.Matrix(mat_4)
+w3 = sp.trigsimp(sp.det(w_mat_4))
+display(w_mat_4)
+display("W3 : ",w3)
+u1 = sp.simplify(sp.integrate((w1/w),X))
+u2 = sp.simplify(sp.integrate((w2/w),X))
+u3 = sp.simplify(sp.integrate((w3/w),X))
+
+display("u1: ", u1)
+display("u2: ", u2)
+display("u3: ", u3)
+
+
+yp = (u1*y1 ) + (u2*y2 ) + (u3*y3)
+yp = sp.trigsimp((yp))
+
+display("The Yp is: y",yp)
+print("Solution Y is: ")
+sol = yc.rhs + yp
+display("The Solution is: ",sol)
+#%%
+# Question 2D
+from sympy.interactive import printing
+from IPython.display import display
+printing.init_printing(use_latex=True)
+import sympy as sp
+# y′′′ + y′ = tanx
+# Variation of Parameters
+# Question 02
+X= sp.symbols('X')
+y = sp.Function('f')(X)
+diff_eqn = sp.Eq(y.diff(X,X,X)-2*y.diff(X,X)-y.diff(X)+2*y,sp.exp(4*X))
+yc = sp.dsolve(diff_eqn.lhs,y)
+print("YC is: ")
+display(yc.rhs)
+
+# for Yp let yp = u1y1 + U2y2
+y1 = sp.exp(-X)
+y2 = sp.exp(X)
+y3 = sp.exp(2*X)
+# Hardqoutig Y1 and Y2 as can be seen from the yc equation
+y1_f_deriv = y1.diff(X)
+y1_s_deriv = y1.diff(X,X)
+y2_f_deriv = y2.diff(X)
+y2_s_deriv = y2.diff(X,X)
+y3_f_deriv = y3.diff(X)
+y3_s_deriv = y3.diff(X,X)
+
+# Create a list of lists of expressions for the rows of the matrix
+mat_1 = [[y1, y2, y3],
+               [y1_f_deriv, y2_f_deriv, y3_f_deriv],
+               [y1_s_deriv, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat = sp.Matrix(mat_1)
+w = sp.det(w_mat)
+display("The Wronskian is: ",w)
+mat_2 = [[0, y2, y3],
+               [0, y2_f_deriv, y3_f_deriv],
+               [diff_eqn.rhs, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_2 = sp.Matrix(mat_2)
+display(w_mat_2)
+w1 = sp.trigsimp(sp.det(w_mat_2))
+
+display("W1 = ",w1)
+mat_3 = [[y1, 0, y3],
+               [y1_f_deriv, 0, y3_f_deriv],
+               [y1_s_deriv, diff_eqn.rhs, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_3 = sp.Matrix(mat_3)
+w2 = sp.trigsimp(sp.det(w_mat_3))
+display(w_mat_3)
+display("W2: ",w2)
+# Display the matrix
+mat_4 = [[y1, y2, 0],
+               [y1_f_deriv, y2_f_deriv, 0],
+               [y1_s_deriv, y2_s_deriv, diff_eqn.rhs]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_4 = sp.Matrix(mat_4)
+w3 = sp.trigsimp(sp.det(w_mat_4))
+display(w_mat_4)
+display("W3 : ",w3)
+u1 = sp.trigsimp(sp.integrate((w1/w),X))
+u2 = sp.trigsimp(sp.integrate((w2/w),X))
+u3 = sp.trigsimp(sp.integrate((w3/w),X))
+
+display("u1: ", u1)
+display("u2: ", u2)
+display("u3: ", u3)
+
+
+yp = (u1*y1 ) + (u2*y2 ) + (u3*y3)
+yp = sp.simplify((yp))
+yp = sp.trigsimp((yp))
+
+display("The Yp is: y",yp)
+print("Solution Y is: ")
+sol = yc.rhs + yp
+display("The Solution is: ",sol)
+#%%
+# Question 2D
+
+from sympy.interactive import printing
+from IPython.display import display
+printing.init_printing(use_latex=True)
+import sympy as sp
+# y′′′ + y′ = tanx
+# Variation of Parameters
+# Question 02
+X= sp.symbols('X')
+y = sp.Function('f')(X)
+diff_eqn = sp.Eq(y.diff(X,X,X)-3*y.diff(X,X)+2*y.diff(X),sp.exp(2*X)/(1+sp.exp(X)))
+yc = sp.dsolve(diff_eqn.lhs,y)
+print("YC is: ")
+display(yc.rhs)
+
+# for Yp let yp = u1y1 + U2y2
+y1 = 1
+y2 = sp.exp(X)
+y3 = sp.exp(2*X)
+# Hardqoutig Y1 and Y2 as can be seen from the yc equation
+y1_f_deriv =0
+y1_s_deriv = 0
+y2_f_deriv = y2.diff(X)
+y2_s_deriv = y2.diff(X,X)
+y3_f_deriv = y3.diff(X)
+y3_s_deriv = y3.diff(X,X)
+
+# Create a list of lists of expressions for the rows of the matrix
+mat_1 = [[y1, y2, y3],
+               [y1_f_deriv, y2_f_deriv, y3_f_deriv],
+               [y1_s_deriv, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat = sp.Matrix(mat_1)
+w = sp.det(w_mat)
+display("The Wronskian is: ",w)
+mat_2 = [[0, y2, y3],
+               [0, y2_f_deriv, y3_f_deriv],
+               [diff_eqn.rhs, y2_s_deriv, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_2 = sp.Matrix(mat_2)
+display(w_mat_2)
+w1 = sp.trigsimp(sp.det(w_mat_2))
+
+display("W1 = ",w1)
+mat_3 = [[y1, 0, y3],
+               [y1_f_deriv, 0, y3_f_deriv],
+               [y1_s_deriv, diff_eqn.rhs, y3_s_deriv]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_3 = sp.Matrix(mat_3)
+w2 = sp.trigsimp(sp.det(w_mat_3))
+display(w_mat_3)
+display("W2: ",w2)
+# Display the matrix
+mat_4 = [[y1, y2, 0],
+               [y1_f_deriv, y2_f_deriv, 0],
+               [y1_s_deriv, y2_s_deriv, diff_eqn.rhs]]
+
+
+# Create the matrix using the list of lists
+
+w_mat_4 = sp.Matrix(mat_4)
+w3 = sp.trigsimp(sp.det(w_mat_4))
+display(w_mat_4)
+display("W3 : ",w3)
+u1 = sp.simplify(sp.integrate((w1/w),X))
+u2 = sp.simplify(sp.integrate((w2/w),X))
+u3 = sp.simplify(sp.integrate((w3/w),X))
+
+display("u1: ", u1)
+display("u2: ", u2)
+display("u3: ", u3)
+
+
+yp = (u1*y1 ) + (u2*y2 ) + (u3*y3)
+yp = sp.simplify((yp))
+yp = sp.trigsimp((yp))
+
+display("The Yp is: y",yp)
+print("Solution Y is: ")
+sol = yc.rhs + yp
+display("The Solution is: ",sol)
+
+#%%
